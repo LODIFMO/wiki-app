@@ -32,10 +32,19 @@ class PagesController < ApplicationController
     sparql = SPARQL::Client.new('http://dbpedia.org/sparql')
     result = sparql.query(
       <<-SPARQL
-        SELECT DISTINCT ?concept ?link
+        SELECT DISTINCT ?concept ?link ?title ?url
         WHERE {
           ?concept rdfs:label "#{params[:keyword]}"@en .
-          ?concept dbo:wikiPageExternalLink ?link
+          { 
+            ?concept dbo:wikiPageExternalLink ?link
+          } UNION {
+            ?link dbp:genre ?concept
+          }
+          OPTIONAL {
+            ?link rdfs:label ?title .
+            FILTER ( lang(?title) = "en" ) .
+            ?link foaf:homepage ?url
+          }
         }
       SPARQL
     )
