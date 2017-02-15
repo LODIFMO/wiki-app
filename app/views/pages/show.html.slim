@@ -1,17 +1,15 @@
 .page-header
-  h1 Semantic Web
+  h1= @keyword
 
 .row
   .col-md-8.col-xs-8.col-sm-8
     .panel.panel-default
-      .panel-heading some tags here
-      .panel-body.text-justify
-        Sun bathe meowing non stop for food dream about hunting birds yet hide when guests come over, for love to play with owner's hair tie. Chirp at birds burrow under covers, and kitty scratches couch bad kitty knock dish off table head butt cant eat out of my own dish for destroy couch as revenge. Purr sit and stare yet eat the fat cats food but destroy the blinds and make muffins stand in front of the computer screen human is washing you why halp oh the horror flee scratch hiss bite. Sit on human. Hunt anything that moves play time, for walk on car leaving trail of paw prints on hood and windshield use lap as chair eat grass, throw it back up lick the plastic bag or sit in box. Purr jump launch to pounce upon little yarn mouse, bare fangs at toy run hide in litter box until treats are fed or put toy mouse in food bowl run out of litter box at full speed lick yarn hanging out of own butt favor packaging over toy chase mice jumps off balcony gives owner dead mouse at present then poops in litter box snatches yarn and fights with dog cat chases laser then plays in grass finds tiny spot in cupboard and sleeps all day jumps in bathtub and meows when owner fills food dish the cat knocks over the food dish cat slides down the water slide and into pool and swims even though it does not like water. Brown cats with pink ears.
+      .panel-body.text-justify== @description[:description].value
       .panel-footer
-        a href='#'
+        a href='#{@description[:concept].value}'
           span.label.label-info dbpedia
-        a href='#'
-          span.label.label-warning wikidata
+        a href='#{@description[:topic].value}'
+          span.label.label-warning Wikipedia
     
     .panel.panel-default
       .panel-heading
