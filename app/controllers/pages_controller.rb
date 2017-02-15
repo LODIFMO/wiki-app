@@ -3,6 +3,7 @@ class PagesController < ApplicationController
     redirect_to '/' if params[:keyword].blank?
     @keyword = params[:keyword]
     @description = load_descriptions.last
+    @metaphacts = wikidata_metaphacts.first
   end
 
   private
@@ -75,5 +76,24 @@ class PagesController < ApplicationController
     solutions << upload_eng(sparql).first
     solutions << upload_eng_mod(sparql).first
     solutions.sort_by {|x| x[:description].value.length}
+  end
+
+  def wikidata_metaphacts
+    sparql = SPARQL::Client.new('https://wikidata.metaphacts.com/sparql')
+    result = sparql.query(
+      <<-SPARQL
+        SELECT DISTINCT ?uri ?label ?description WHERE {
+          ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+          ?uri <http://schema.org/description> ?description.
+          ?label <http://www.bigdata.com/rdf/search#search> "#{params[:keyword]}".
+          ?label <http://www.bigdata.com/rdf/search#minRelevance> "0.5".
+          ?label <http://www.bigdata.com/rdf/search#matchAllTerms> "true".
+          BIND(<http://www.w3.org/2001/XMLSchema#integer>(SUBSTR(STR(?uri), 33 )) AS ?q)
+        }
+        ORDER BY ?q
+        LIMIT 1
+      SPARQL
+    )
+    result
   end
 end

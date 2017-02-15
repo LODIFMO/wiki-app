@@ -45,13 +45,22 @@
     
     .panel.panel-default
       .panel-heading
-        .panel-title Other
-      .panel-body -
+        .panel-title Wikidata
+      .panel-body
+        table.table.table-hover
+          tr
+            td uri
+            td
+              a href='#{@metaphacts[:uri].value}' = @metaphacts[:uri].value
+          tr
+            td label
+            td= @metaphacts[:label].value
+          tr
+            td description
+            td= @metaphacts[:description].value
       .panel-footer
-        a href='#'
-          span.label.label-info Open University
-        a href='#'
-          span.label.label-warning University of Southampton
+        a href='#{@metaphacts[:uri].value}'
+          span.label.label-warning wikidata.metaphacts.com
 
   .col-md-4.col-xs-4.col-sm-4
     .panel.panel-default
