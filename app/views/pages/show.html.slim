@@ -13,7 +13,7 @@
     
     .panel.panel-default
       .panel-heading
-        .panel-title Links
+        .panel-title Publications
       .panel-body
         ul
           - 15.times do
@@ -93,3 +93,12 @@
           span.label.label-info Open University
         a href='#'
           span.label.label-warning University of Southampton
+
+.panel.panel-default
+  .panel-heading
+    .panel-title Links
+  .panel-body
+    ul
+      - @links.each do |link|
+        li
+          a href='#{link[:link].value}'= link[:link].value

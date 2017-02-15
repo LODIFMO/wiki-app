@@ -5,9 +5,25 @@ class PagesController < ApplicationController
     @description = load_descriptions.last
     @metaphacts = wikidata_metaphacts.first
     @people = load_people
+    @links = load_links
   end
 
   private
+
+  def load_links
+    sparql = SPARQL::Client.new('http://dbpedia.org/sparql')
+    result = sparql.query(
+      <<-SPARQL
+        SELECT DISTINCT ?concept ?link
+        WHERE {
+          ?concept rdfs:label "Semantic Web"@en .
+          ?concept dbo:wikiPageExternalLink ?link
+        }
+      SPARQL
+    )
+
+    result
+  end
 
   # get rus text from rdfs:comment
   def upload_rus(sparql)
