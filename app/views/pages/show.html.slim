@@ -93,6 +93,15 @@
           span.label.label-info Open University
         a href='#'
           span.label.label-warning University of Southampton
+    
+    .panel.panel-default
+      .panel-heading
+        .panel-title Subjects
+      .panel-body
+        ul
+          - @subjects.each do |s|
+            li
+              a href='#{s[:subject].value}'= s[:label].value
 
 .panel.panel-default
   .panel-heading

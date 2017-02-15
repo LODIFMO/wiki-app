@@ -6,9 +6,27 @@ class PagesController < ApplicationController
     @metaphacts = wikidata_metaphacts.first
     @people = load_people
     @links = load_links
+    @subjects = load_subjects
   end
 
   private
+
+  def load_subjects
+    sparql = SPARQL::Client.new('http://dbpedia.org/sparql')
+    result = sparql.query(
+      <<-SPARQL
+        SELECT DISTINCT ?concept ?subject ?label
+        WHERE {
+          ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept dct:subject ?subject .
+          ?subject rdfs:label ?label .
+          FILTER ( lang(?label) = "en" )
+        }
+      SPARQL
+    )
+
+    result
+  end
 
   def load_links
     sparql = SPARQL::Client.new('http://dbpedia.org/sparql')
@@ -16,7 +34,7 @@ class PagesController < ApplicationController
       <<-SPARQL
         SELECT DISTINCT ?concept ?link
         WHERE {
-          ?concept rdfs:label "Semantic Web"@en .
+          ?concept rdfs:label "#{params[:keyword]}"@en .
           ?concept dbo:wikiPageExternalLink ?link
         }
       SPARQL
@@ -103,7 +121,7 @@ class PagesController < ApplicationController
                 (group_concat(distinct ?known_for ; separator = ";") AS ?known_for)
                 ?university_name ?alma_mater
         WHERE {
-          ?concept rdfs:label "Semantic Web"@en .
+          ?concept rdfs:label "#{params[:keyword]}"@en .
           { ?person dbp:fields ?concept } UNION { ?person dbo:field ?concept } UNION { ?person dbo:knownFor ?concept } UNION { ?person dbp:field ?concept }
           OPTIONAL {
             ?person dbo:nationality ?nationality .
