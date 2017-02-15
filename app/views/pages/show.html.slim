@@ -10,38 +10,18 @@
           span.label.label-info dbpedia
         a href='#{@description[:topic].value}'
           span.label.label-warning Wikipedia
+        a href='#{@description[:homepage]}'
+          span.label.label-primary W3C
     
     .panel.panel-default
       .panel-heading
         .panel-title Publications
-      .panel-body
-        ul
-          - 15.times do
-            li
-              span= "#{Faker::Book.author} (#{Faker::Date.backward(1400).year}). #{Faker::Book.title}, #{Faker::Book.publisher}. #{Faker::Address.city}. "
-              a href='#'
-                = fa_icon 'fw external-link'
-      .panel-footer
-        a href='#'
-          span.label.label-info Open University
-        a href='#'
-          span.label.label-warning University of Southampton
+      .panel-body -
     
     .panel.panel-default
       .panel-heading
         .panel-title Projects
-      .panel-body
-        ul
-          - 15.times do
-            li
-              span= "#{Faker::Lorem.sentence} (#{Faker::University.name}, #{Faker::Date.backward(1400).year})"
-              a href='#'
-                = fa_icon 'fw external-link'
-      .panel-footer
-        a href='#'
-          span.label.label-info Open University
-        a href='#'
-          span.label.label-warning University of Southampton
+      .panel-body -
     
     .panel.panel-default
       .panel-heading
@@ -82,17 +62,7 @@
     .panel.panel-default
       .panel-heading
         .panel-title Courses
-      .panel-body
-        ul
-          - 10.times do
-            li
-              a href='#'= Faker::Educator.course
-              a href='#'= " (#{Faker::University.name})"
-      .panel-footer
-        a href='#'
-          span.label.label-info Open University
-        a href='#'
-          span.label.label-warning University of Southampton
+      .panel-body -
     
     .panel.panel-default
       .panel-heading

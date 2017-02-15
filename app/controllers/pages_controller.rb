@@ -47,10 +47,11 @@ class PagesController < ApplicationController
   def upload_rus(sparql)
     sparql.query(
       <<-SPARQL
-        SELECT DISTINCT ?concept ?description ?topic
+        SELECT DISTINCT ?concept ?description ?topic ?homepage
         WHERE {
           ?concept rdfs:comment ?description .
           ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept foaf:homepage ?homepage .
           ?topic foaf:primaryTopic ?concept .
           FILTER ( lang(?description) = "ru" )
         }
@@ -62,10 +63,11 @@ class PagesController < ApplicationController
   def upload_rus_mod(sparql)
     sparql.query(
       <<-SPARQL
-        SELECT DISTINCT ?concept ?description ?topic
+        SELECT DISTINCT ?concept ?description ?topic ?homepage
         WHERE {
           ?concept dbo:abstract ?description .
           ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept foaf:homepage ?homepage .
           ?topic foaf:primaryTopic ?concept .
           FILTER ( lang(?description) = "ru" )
         }
@@ -77,10 +79,11 @@ class PagesController < ApplicationController
   def upload_eng(sparql)
     sparql.query(
       <<-SPARQL
-        SELECT DISTINCT ?concept ?description ?topic
+        SELECT DISTINCT ?concept ?description ?topic ?homepage
         WHERE {
           ?concept rdfs:comment ?description .
           ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept foaf:homepage ?homepage .
           ?topic foaf:primaryTopic ?concept .
           FILTER ( lang(?description) = "en" )
         }
@@ -92,10 +95,11 @@ class PagesController < ApplicationController
   def upload_eng_mod(sparql)
     sparql.query(
       <<-SPARQL
-        SELECT DISTINCT ?concept ?description ?topic
+        SELECT DISTINCT ?concept ?description ?topic ?homepage
         WHERE {
           ?concept dbo:abstract ?description .
           ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept foaf:homepage ?homepage .
           ?topic foaf:primaryTopic ?concept .
           FILTER ( lang(?description) = "en" )
         }
