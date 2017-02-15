@@ -1,11 +1,36 @@
 doctype html
-  html
-    head
-      title LOD WIKI APP
+html
+  head
+    title LOD WIKI APP
 
-      = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
-      = javascript_include_tag 'application', 'data-turbolinks-track' => true
-      = csrf_meta_tags
-  
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+
   body
-    == yield
+    nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          button.navbar-toggle.collapsed aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button" 
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand href="#"  Project name
+        #navbar.navbar-collapse.collapse
+          ul.nav.navbar-nav.navbar-right
+            li
+              a href="#"  Dashboard
+            li
+              a href="#"  Settings
+            li
+              a href="#"  Profile
+            li
+              a href="#"  Help
+          form.navbar-form.navbar-right
+            input.form-control placeholder="Search..." type="text" /
+
+    .container
+      .row
+        == yield
+
