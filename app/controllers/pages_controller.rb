@@ -4,6 +4,7 @@ class PagesController < ApplicationController
     @keyword = params[:keyword]
     @description = load_descriptions.last
     @metaphacts = wikidata_metaphacts.first
+    @people = load_people
   end
 
   private
@@ -76,6 +77,38 @@ class PagesController < ApplicationController
     solutions << upload_eng(sparql).first
     solutions << upload_eng_mod(sparql).first
     solutions.sort_by {|x| x[:description].value.length}
+  end
+
+  def load_people
+    sparql = SPARQL::Client.new('http://dbpedia.org/sparql')
+    result = sparql.query(
+      <<-SPARQL
+        SELECT DISTINCT ?concept ?person ?person_name ?nationality_name
+                (group_concat(distinct ?known_for ; separator = ";") AS ?known_for)
+                ?university_name ?alma_mater
+        WHERE {
+          ?concept rdfs:label "Semantic Web"@en .
+          { ?person dbp:fields ?concept } UNION { ?person dbo:field ?concept } UNION { ?person dbo:knownFor ?concept } UNION { ?person dbp:field ?concept }
+          OPTIONAL {
+            ?person dbo:nationality ?nationality .
+            ?nationality rdfs:label ?nationality_name .
+            FILTER ( lang(?nationality_name) = "en" )
+          }
+          ?person rdfs:label ?person_name .
+          FILTER ( lang(?person_name) = "en" ) .
+          OPTIONAL {
+            ?person dbp:knownFor ?known_for .
+            FILTER ( lang(?known_for) = "en" )
+          }
+          OPTIONAL {
+            ?person dbo:almaMater ?alma_mater .
+            ?alma_mater rdfs:label ?university_name .
+            FILTER ( lang(?university_name) = "en" )
+          }
+        }
+      SPARQL
+    )
+    result
   end
 
   def wikidata_metaphacts

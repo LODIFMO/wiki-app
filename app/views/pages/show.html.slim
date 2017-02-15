@@ -13,7 +13,7 @@
     
     .panel.panel-default
       .panel-heading
-        .panel-title Publications
+        .panel-title Links
       .panel-body
         ul
           - 15.times do
@@ -68,15 +68,16 @@
         .panel-title Peoples
       .panel-body
         ul
-          - 10.times do
+          - @people.each do |person|
             li
-              a href='#'= Faker::Name.name
-              a href='#'= " (#{Faker::University.name})"
+              a href='#{person[:person].value}' = person[:person_name].value
+              - if person[:alma_mater].present? && person[:university_name].present?
+                span = " ("
+                a href='#{person[:alma_mater].value}' = person[:university_name].value
+                span = ")"
       .panel-footer
-        a href='#'
-          span.label.label-info Open University
-        a href='#'
-          span.label.label-warning University of Southampton
+        a href='http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=SELECT+DISTINCT+%3Fconcept+%3Fperson+%3Fperson_name+%3Fnationality_name%0D%0A++++++++++++++++%28group_concat%28distinct+%3Fknown_for+%3B+separator+%3D+%22%3B%22%29+AS+%3Fknown_for%29%0D%0A++++++++++++++++%3Funiversity_name%0D%0A++++++++WHERE+%7B%0D%0A++++++++++%3Fconcept+rdfs%3Alabel+%22Semantic+Web%22%40en+.%0D%0A++++++++++%7B+%3Fperson+dbp%3Afields+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbo%3Afield+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbo%3AknownFor+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbp%3Afield+%3Fconcept+%7D%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbo%3Anationality+%3Fnationality+.%0D%0A++++++++++++%3Fnationality+rdfs%3Alabel+%3Fnationality_name+.%0D%0A++++++++++++FILTER+%28+lang%28%3Fnationality_name%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++++%3Fperson+rdfs%3Alabel+%3Fperson_name+.%0D%0A++++++++++FILTER+%28+lang%28%3Fperson_name%29+%3D+%22en%22+%29+.%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbp%3AknownFor+%3Fknown_for+.%0D%0A++++++++++++FILTER+%28+lang%28%3Fknown_for%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbo%3AalmaMater+%3Falma_mater+.%0D%0A++++++++++++%3Falma_mater+rdfs%3Alabel+%3Funiversity_name+.%0D%0A++++++++++++FILTER+%28+lang%28%3Funiversity_name%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++%7D&format=text%2Fhtml&CXML_redir_for_subjs=121&CXML_redir_for_hrefs=&timeout=30000&debug=on'
+          span.label.label-info dbpedia
     
     .panel.panel-default
       .panel-heading
