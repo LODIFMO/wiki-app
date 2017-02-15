@@ -32,6 +32,9 @@ gem 'bootstrap-generators', group: :development
 gem 'slim-rails'
 gem 'react-rails'
 
+# fake data
+gem 'faker'
+
 # semantic web
 gem 'sparql-client'
 
