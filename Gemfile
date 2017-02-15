@@ -23,14 +23,17 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+# frontend
+gem 'bootstrap-sass'
+gem 'font-awesome-rails', '~> 4.4.0'
+gem 'wice_grid'
+gem 'progress_bar', require: false
+gem 'bootstrap-generators', group: :development
+gem 'slim-rails'
+gem 'react-rails'
 
-# Use Unicorn as the app server
-# gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
+# semantic web
+gem 'sparql-client'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
