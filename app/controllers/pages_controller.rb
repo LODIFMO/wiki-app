@@ -58,7 +58,7 @@ class PagesController < ApplicationController
         SELECT DISTINCT ?concept ?subject ?label
         WHERE {
           ?concept rdfs:label "#{@keyword}"@en .
-          ?concept dct:subject ?subject .
+          OPTIONAL { ?concept dct:subject ?subject } .
           ?subject rdfs:label ?label .
           FILTER ( lang(?label) = "en" )
         }
@@ -100,8 +100,8 @@ class PagesController < ApplicationController
         WHERE {
           ?concept rdfs:comment ?description .
           ?concept rdfs:label "#{@keyword}"@en .
-          ?concept foaf:homepage ?homepage .
-          ?topic foaf:primaryTopic ?concept .
+          OPTIONAL { ?concept foaf:homepage ?homepage } .
+          OPTIONAL { ?topic foaf:primaryTopic ?concept } .
           FILTER ( lang(?description) = "ru" )
         }
       SPARQL
@@ -116,8 +116,8 @@ class PagesController < ApplicationController
         WHERE {
           ?concept dbo:abstract ?description .
           ?concept rdfs:label "#{@keyword}"@en .
-          ?concept foaf:homepage ?homepage .
-          ?topic foaf:primaryTopic ?concept .
+          OPTIONAL { ?concept foaf:homepage ?homepage } .
+          OPTIONAL { ?topic foaf:primaryTopic ?concept } .
           FILTER ( lang(?description) = "ru" )
         }
       SPARQL
@@ -132,8 +132,8 @@ class PagesController < ApplicationController
         WHERE {
           ?concept rdfs:comment ?description .
           ?concept rdfs:label "#{@keyword}"@en .
-          ?concept foaf:homepage ?homepage .
-          ?topic foaf:primaryTopic ?concept .
+          OPTIONAL { ?concept foaf:homepage ?homepage } .
+          OPTIONAL { ?topic foaf:primaryTopic ?concept } .
           FILTER ( lang(?description) = "en" )
         }
       SPARQL
@@ -148,8 +148,8 @@ class PagesController < ApplicationController
         WHERE {
           ?concept dbo:abstract ?description .
           ?concept rdfs:label "#{@keyword}"@en .
-          ?concept foaf:homepage ?homepage .
-          ?topic foaf:primaryTopic ?concept .
+          OPTIONAL { ?concept foaf:homepage ?homepage } .
+          OPTIONAL { ?topic foaf:primaryTopic ?concept } .
           FILTER ( lang(?description) = "en" )
         }
       SPARQL
