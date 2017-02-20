@@ -16,7 +16,19 @@
     .panel.panel-default
       .panel-heading
         .panel-title Publications
-      .panel-body -
+      .panel-body.text-justify
+        ul
+          - uri = ''
+          - @articles.each do |article|
+            - if uri != article[:think].value
+              - uri = article[:think].value
+              li
+                = article[:label].value
+                a href="#{uri}" target='__blank'
+                  = fa_icon 'fw external-link'
+      .panel-footer
+        a href='/pages/publications?keyword=#{params[:keyword]}'
+          span.label.label-warning More
     
     .panel.panel-default
       .panel-heading

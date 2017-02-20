@@ -7,6 +7,7 @@ class PagesController < ApplicationController
     @people = load_people
     @links = load_links
     @subjects = load_subjects
+    @articles = load_articles
   end
 
   private
@@ -172,6 +173,23 @@ class PagesController < ApplicationController
         }
         ORDER BY ?q
         LIMIT 1
+      SPARQL
+    )
+    result
+  end
+
+  def load_articles
+    sparql = SPARQL::Client.new('http://data.open.ac.uk/sparql')
+    result = sparql.query(
+      <<-SPARQL
+        SELECT DISTINCT ?think ?label ?date WHERE {
+          ?think <http://purl.org/ontology/bibo/abstract> ?description .
+          ?think <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+          ?think <http://purl.org/dc/terms/date> ?date .
+          FILTER (regex(str(?description), "#{params[:keyword]}", "i" ))
+        }
+        ORDER BY DESC(?date) ?think ?label
+        LIMIT 30
       SPARQL
     )
     result
