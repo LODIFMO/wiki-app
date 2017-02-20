@@ -1,9 +1,10 @@
 class PagesController < ApplicationController
   def show
     redirect_to '/' if params[:keyword].blank?
-    @keyword = params[:keyword]
-    @description = load_descriptions.last
     @metaphacts = wikidata_metaphacts.first
+    redirect_to '/' if @metaphacts[:label].blank?
+    @keyword = @metaphacts[:label].value
+    @description = load_descriptions.last
     @people = load_people
     @links = load_links
     @subjects = load_subjects
@@ -41,7 +42,7 @@ class PagesController < ApplicationController
                       FILTER ( lang(?comment) = "en" ) .
                   }
                   FILTER ( lang(?label) = "en" ) .
-                  FILTER (regex(str(?description), "#{params[:keyword]}", "i" ))
+                  FILTER (regex(str(?description), "#{@keyword}", "i" ))
                 }
         ORDER BY DESC(?start_date) DESC(?end_date) ?think
       SPARQL
@@ -55,7 +56,7 @@ class PagesController < ApplicationController
       <<-SPARQL
         SELECT DISTINCT ?concept ?subject ?label
         WHERE {
-          ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept rdfs:label "#{@keyword}"@en .
           ?concept dct:subject ?subject .
           ?subject rdfs:label ?label .
           FILTER ( lang(?label) = "en" )
@@ -72,7 +73,7 @@ class PagesController < ApplicationController
       <<-SPARQL
         SELECT DISTINCT ?concept ?link ?title ?url
         WHERE {
-          ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept rdfs:label "#{@keyword}"@en .
           { 
             ?concept dbo:wikiPageExternalLink ?link
           } UNION {
@@ -97,7 +98,7 @@ class PagesController < ApplicationController
         SELECT DISTINCT ?concept ?description ?topic ?homepage
         WHERE {
           ?concept rdfs:comment ?description .
-          ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept rdfs:label "#{@keyword}"@en .
           ?concept foaf:homepage ?homepage .
           ?topic foaf:primaryTopic ?concept .
           FILTER ( lang(?description) = "ru" )
@@ -113,7 +114,7 @@ class PagesController < ApplicationController
         SELECT DISTINCT ?concept ?description ?topic ?homepage
         WHERE {
           ?concept dbo:abstract ?description .
-          ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept rdfs:label "#{@keyword}"@en .
           ?concept foaf:homepage ?homepage .
           ?topic foaf:primaryTopic ?concept .
           FILTER ( lang(?description) = "ru" )
@@ -129,7 +130,7 @@ class PagesController < ApplicationController
         SELECT DISTINCT ?concept ?description ?topic ?homepage
         WHERE {
           ?concept rdfs:comment ?description .
-          ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept rdfs:label "#{@keyword}"@en .
           ?concept foaf:homepage ?homepage .
           ?topic foaf:primaryTopic ?concept .
           FILTER ( lang(?description) = "en" )
@@ -145,7 +146,7 @@ class PagesController < ApplicationController
         SELECT DISTINCT ?concept ?description ?topic ?homepage
         WHERE {
           ?concept dbo:abstract ?description .
-          ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept rdfs:label "#{@keyword}"@en .
           ?concept foaf:homepage ?homepage .
           ?topic foaf:primaryTopic ?concept .
           FILTER ( lang(?description) = "en" )
@@ -172,7 +173,7 @@ class PagesController < ApplicationController
                 (group_concat(distinct ?known_for ; separator = ";") AS ?known_for)
                 ?university_name ?alma_mater
         WHERE {
-          ?concept rdfs:label "#{params[:keyword]}"@en .
+          ?concept rdfs:label "#{@keyword}"@en .
           { ?person dbp:fields ?concept } UNION { ?person dbo:field ?concept } UNION { ?person dbo:knownFor ?concept } UNION { ?person dbp:field ?concept }
           OPTIONAL {
             ?person dbo:nationality ?nationality .
@@ -223,7 +224,7 @@ class PagesController < ApplicationController
           ?think <http://purl.org/ontology/bibo/abstract> ?description .
           ?think <http://www.w3.org/2000/01/rdf-schema#label> ?label .
           ?think <http://purl.org/dc/terms/date> ?date .
-          FILTER (regex(str(?description), "#{params[:keyword]}", "i" ))
+          FILTER (regex(str(?description), "#{@keyword}", "i" ))
         }
         ORDER BY DESC(?date) ?think ?label
         LIMIT 30
