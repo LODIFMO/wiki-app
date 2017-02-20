@@ -8,9 +8,46 @@ class PagesController < ApplicationController
     @links = load_links
     @subjects = load_subjects
     @articles = load_articles
+    @projects = load_projects
   end
 
   private
+
+  def load_projects
+    sparql = SPARQL::Client.new('http://data.open.ac.uk/sparql')
+    result = sparql.query(
+      <<-SPARQL
+        SELECT DISTINCT ?think ?label ?start_date ?end_date ?homepage ?subject ?comment
+        WHERE {
+                  ?think <http://purl.org/dc/terms/description> ?description .
+                  ?think <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://vocab.ox.ac.uk/projectfunding#Project> .
+                  ?think <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+                  OPTIONAL {
+                      ?think <http://vocab.ox.ac.uk/projectfunding#startDate> ?start_date .
+                  }
+                  OPTIONAL {
+                      ?think <http://vocab.ox.ac.uk/projectfunding#endDate> ?end_date .
+                  }
+                  OPTIONAL {
+                      ?think <http://xmlns.com/foaf/0.1/homepage> ?homepage .
+                  }
+                  OPTIONAL {
+                      ?think <http://purl.org/dc/terms/subject> ?subject_uri .
+                      ?subject_uri <http://www.w3.org/2000/01/rdf-schema#label> ?subject .
+                      FILTER ( lang(?subject) = "en" ) .
+                  }
+                  OPTIONAL {
+                      ?think <http://www.w3.org/2000/01/rdf-schema#comment> ?comment .
+                      FILTER ( lang(?comment) = "en" ) .
+                  }
+                  FILTER ( lang(?label) = "en" ) .
+                  FILTER (regex(str(?description), "#{params[:keyword]}", "i" ))
+                }
+        ORDER BY DESC(?start_date) DESC(?end_date) ?think
+      SPARQL
+    )
+    result
+  end
 
   def load_subjects
     sparql = SPARQL::Client.new('http://dbpedia.org/sparql')

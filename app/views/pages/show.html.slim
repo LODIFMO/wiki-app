@@ -33,7 +33,17 @@
     .panel.panel-default
       .panel-heading
         .panel-title Projects
-      .panel-body -
+      .panel-body.text-justify
+        ul
+          - uri = ''
+          - @projects.each do |project|
+            - if uri != project[:think].value
+              - uri = project[:think].value
+              li
+                - comment = project[:comment].present? ? " - #{project[:comment].value}" : ''
+                = "#{project[:label].value}#{comment} "
+                a href="#{uri}" target='__blank'
+                  = fa_icon 'fw external-link'
     
     .panel.panel-default
       .panel-heading
