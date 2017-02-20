@@ -10,16 +10,26 @@
         a href='#rus' aria-controls='rus' role='tab' data-toggle='tab' RUS
     
     .tab-content
-      .tab-pane.active#eng role='tabpanel' eng
+      .tab-pane.active#eng role='tabpanel'
+        .panel.panel-default
+          .panel-body.text-justify== @engdescription[:description].value
+          .panel-footer
+            a href='#{@engdescription[:concept].value}'
+              span.label.label-info dbpedia
+            a href='#{@engdescription[:topic].value}'
+              span.label.label-warning Wikipedia
+            a href='#{@engdescription[:homepage]}'
+              span.label.label-primary W3C
+
       .tab-pane#rus role='tabpanel'
         .panel.panel-default
-          .panel-body.text-justify== @description[:description].value
+          .panel-body.text-justify== @rusdescription[:description].value
           .panel-footer
-            a href='#{@description[:concept].value}'
+            a href='#{@rusdescription[:concept].value}'
               span.label.label-info dbpedia
-            a href='#{@description[:topic].value}'
+            a href='#{@rusdescription[:topic].value}'
               span.label.label-warning Wikipedia
-            a href='#{@description[:homepage]}'
+            a href='#{@rusdescription[:homepage]}'
               span.label.label-primary W3C
     
     .panel.panel-default

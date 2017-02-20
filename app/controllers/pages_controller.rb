@@ -4,7 +4,8 @@ class PagesController < ApplicationController
     @metaphacts = wikidata_metaphacts.first
     redirect_to '/' if @metaphacts[:label].blank?
     @keyword = @metaphacts[:label].value
-    @description = load_descriptions.last
+    @engdescription = load_eng_description.last
+    @rusdescription = load_rus_description.last
     @people = load_people
     @links = load_links
     @subjects = load_subjects
@@ -153,6 +154,22 @@ class PagesController < ApplicationController
         }
       SPARQL
     )
+  end
+
+  def load_eng_description
+    sparql = SPARQL::Client.new("http://dbpedia.org/sparql")
+    solutions = []
+    solutions << upload_eng(sparql).first
+    solutions << upload_eng_mod(sparql).first
+    solutions.sort_by {|x| x[:description].value.length}
+  end
+
+  def load_rus_description
+    sparql = SPARQL::Client.new("http://dbpedia.org/sparql")
+    solutions = []
+    solutions << upload_rus(sparql).first
+    solutions << upload_rus_mod(sparql).first
+    solutions.sort_by {|x| x[:description].value.length}
   end
 
   def load_descriptions
