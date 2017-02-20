@@ -3,7 +3,7 @@ class PagesController < ApplicationController
     redirect_to '/' if params[:keyword].blank?
     @metaphacts = wikidata_metaphacts.first
     redirect_to '/' if @metaphacts[:label].blank?
-    @keyword = @metaphacts[:label].value
+    @keyword = correct_keyword.first[:label].value
     @engdescription = load_eng_description.last
     @rusdescription = load_rus_description.last
     @people = load_people
@@ -245,6 +245,23 @@ class PagesController < ApplicationController
         }
         ORDER BY DESC(?date) ?think ?label
         LIMIT 30
+      SPARQL
+    )
+    result
+  end
+
+  def correct_keyword
+    sparql = SPARQL::Client.new('http://dbpedia.org/sparql')
+    result = sparql.query(
+      <<-SPARQL
+        SELECT DISTINCT  ?label
+        WHERE
+          { ?concept  rdfs:label    ?label ;
+                      rdf:type      owl:Thing
+            FILTER ( lang(?label) = "en" )
+            FILTER (lcase(str(?label)) = "#{params[:keyword].downcase}")
+          }
+        LIMIT 1
       SPARQL
     )
     result
