@@ -3,15 +3,24 @@
 
 .row
   .col-md-8.col-xs-8.col-sm-8
-    .panel.panel-default
-      .panel-body.text-justify== @description[:description].value
-      .panel-footer
-        a href='#{@description[:concept].value}'
-          span.label.label-info dbpedia
-        a href='#{@description[:topic].value}'
-          span.label.label-warning Wikipedia
-        a href='#{@description[:homepage]}'
-          span.label.label-primary W3C
+    ul.nav.nav-tabs role='tablist'
+      li.active role='presentation'
+        a href='#eng' aria-controls='eng' role='tab' data-toggle='tab' ENG
+      li role='presentation'
+        a href='#rus' aria-controls='rus' role='tab' data-toggle='tab' RUS
+    
+    .tab-content
+      .tab-pane.active#eng role='tabpanel' eng
+      .tab-pane#rus role='tabpanel'
+        .panel.panel-default
+          .panel-body.text-justify== @description[:description].value
+          .panel-footer
+            a href='#{@description[:concept].value}'
+              span.label.label-info dbpedia
+            a href='#{@description[:topic].value}'
+              span.label.label-warning Wikipedia
+            a href='#{@description[:homepage]}'
+              span.label.label-primary W3C
     
     .panel.panel-default
       .panel-heading
