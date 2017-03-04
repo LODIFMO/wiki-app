@@ -13,8 +13,8 @@ module Api
     end
 
     def redis_ping
-      $redis.set('test', 'pong')
-      render json: :ok
+      $redis.set('ping', 'pong')
+      render json: $redis.get('ping')
     end
   end
 end
