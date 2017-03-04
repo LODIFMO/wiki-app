@@ -14,12 +14,23 @@ class PagesController < ApplicationController
     @articles = load_articles
     @projects = load_projects
     make_json
-    make_date_json
+    make_data_json
+    save2redis
   end
 
   private
 
-  def make_date_json
+  def save2redis
+    data = {
+      keyword: @keyword,
+      graph: make_json,
+      data_graph: make_data_json
+    }
+
+    $redis.set(@keyword, data.to_json)
+  end
+
+  def make_data_json
     result = {
       name: 'owl:Thing',
       type: :class,
@@ -66,6 +77,7 @@ class PagesController < ApplicationController
       }]
     }
     File.open("#{Rails.root}/public/#{@keyword.parameterize.underscore}.json", 'w') { |file| file.write result.to_json }
+    result
   end
 
   def make_json
@@ -109,6 +121,7 @@ class PagesController < ApplicationController
       type: :keyword
     }
     File.open("#{Rails.root}/public/#{@keyword.parameterize.underscore}_data.json", 'w') { |file| file.write result.to_json }
+    result
   end
 
   def load_projects
