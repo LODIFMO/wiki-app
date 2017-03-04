@@ -31,6 +31,7 @@ gem 'progress_bar', require: false
 gem 'bootstrap-generators', group: :development
 gem 'slim-rails'
 gem 'react-rails'
+gem 'd3js-rails'
 
 # fake data
 gem 'faker'
