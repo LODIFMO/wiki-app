@@ -1,141 +1,159 @@
 .page-header
   h1= @keyword
 
-.row
-  .col-md-8.col-xs-8.col-sm-8
-    ul.nav.nav-tabs role='tablist'
-      li.active role='presentation'
-        a href='#eng' aria-controls='eng' role='tab' data-toggle='tab' ENG
-      li role='presentation'
-        a href='#rus' aria-controls='rus' role='tab' data-toggle='tab' RUS
-    
-    .tab-content
-      .tab-pane.active#eng role='tabpanel'
-        .panel.panel-default
-          .panel-body.text-justify== @engdescription[:description].value
-          .panel-footer
-            a href='#{@engdescription[:concept].value}'
-              span.label.label-info dbpedia
-            a href='#{@engdescription[:topic].value}'
-              span.label.label-warning Wikipedia
-            a href='#{@engdescription[:homepage]}'
-              span.label.label-primary W3C
+ul.nav.nav-pills role='tablist'
+  li.active role='presentation'
+    a href='#text' aria-controls='text' role='tab' data-toggle='tab' Data
+  li role='presentation'
+    a href='#tabdatagraph' aria-controls='tabdatagraph' role='tab' data-toggle='tab' Data graph
+  li role='presentation'
+    a href='#tabgraph' aria-controls='tabgraph' role='tab' data-toggle='tab' Structure graph
+br
 
-      .tab-pane#rus role='tabpanel'
-        .panel.panel-default
-          .panel-body.text-justify== @rusdescription[:description].value
-          .panel-footer
-            a href='#{@rusdescription[:concept].value}'
-              span.label.label-info dbpedia
-            a href='#{@rusdescription[:topic].value}'
-              span.label.label-warning Wikipedia
-            a href='#{@rusdescription[:homepage]}'
-              span.label.label-primary W3C
-    
-    .panel.panel-default
-      .panel-heading
-        .panel-title Publications
-      .panel-body.text-justify
-        ul
-          - uri = ''
-          - @articles.each do |article|
-            - if uri != article[:think].value
-              - uri = article[:think].value
+.tab-content
+  .tab-pane.active#text role='tabpanel'
+    .tab-data-wiki
+      .row
+        .col-md-8.col-xs-8.col-sm-8
+          ul.nav.nav-tabs role='tablist'
+            li.active role='presentation'
+              a href='#eng' aria-controls='eng' role='tab' data-toggle='tab' ENG
+            li role='presentation'
+              a href='#rus' aria-controls='rus' role='tab' data-toggle='tab' RUS
+          
+          .tab-content
+            .tab-pane.active#eng role='tabpanel'
+              .panel.panel-default
+                .panel-body.text-justify== @engdescription[:description].value
+                .panel-footer
+                  a href='#{@engdescription[:concept].value}'
+                    span.label.label-info dbpedia
+                  a href='#{@engdescription[:topic].value}'
+                    span.label.label-warning Wikipedia
+                  a href='#{@engdescription[:homepage]}'
+                    span.label.label-primary W3C
+
+            .tab-pane#rus role='tabpanel'
+              .panel.panel-default
+                .panel-body.text-justify== @rusdescription[:description].value
+                .panel-footer
+                  a href='#{@rusdescription[:concept].value}'
+                    span.label.label-info dbpedia
+                  a href='#{@rusdescription[:topic].value}'
+                    span.label.label-warning Wikipedia
+                  a href='#{@rusdescription[:homepage]}'
+                    span.label.label-primary W3C
+          
+          .panel.panel-default
+            .panel-heading
+              .panel-title Publications
+            .panel-body.text-justify
+              ul
+                - uri = ''
+                - @articles.each do |article|
+                  - if uri != article[:think].value
+                    - uri = article[:think].value
+                    li
+                      = article[:label].value
+                      a href="#{uri}" target='__blank'
+                        = fa_icon 'fw external-link'
+            .panel-footer
+              a href='/pages/publications?keyword=#{params[:keyword]}'
+                span.label.label-warning More
+          
+          .panel.panel-default
+            .panel-heading
+              .panel-title Projects
+            .panel-body.text-justify
+              ul
+                - uri = ''
+                - @projects.each do |project|
+                  - if uri != project[:think].value
+                    - uri = project[:think].value
+                    li
+                      - comment = project[:comment].present? ? " - #{project[:comment].value}" : ''
+                      = "#{project[:label].value}#{comment} "
+                      a href="#{uri}" target='__blank'
+                        = fa_icon 'fw external-link'
+          
+          .panel.panel-default
+            .panel-heading
+              .panel-title Wikidata
+            .panel-body
+              table.table.table-hover
+                tr
+                  td uri
+                  td
+                    a href='#{@metaphacts[:uri].value}' = @metaphacts[:uri].value
+                tr
+                  td label
+                  td= @metaphacts[:label].value
+                tr
+                  td description
+                  td= @metaphacts[:description].value
+            .panel-footer
+              a href='#{@metaphacts[:uri].value}'
+                span.label.label-warning wikidata.metaphacts.com
+
+        .col-md-4.col-xs-4.col-sm-4
+          .panel.panel-default
+            .panel-heading
+              .panel-title People
+            .panel-body
+              ul
+                - @people.each do |person|
+                  li
+                    a href='#{person[:person].value}' = person[:person_name].value
+                    - if person[:alma_mater].present? && person[:university_name].present?
+                      span = " ("
+                      a href='#{person[:alma_mater].value}' = person[:university_name].value
+                      span = ")"
+            .panel-footer
+              a href='http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=SELECT+DISTINCT+%3Fconcept+%3Fperson+%3Fperson_name+%3Fnationality_name%0D%0A++++++++++++++++%28group_concat%28distinct+%3Fknown_for+%3B+separator+%3D+%22%3B%22%29+AS+%3Fknown_for%29%0D%0A++++++++++++++++%3Funiversity_name%0D%0A++++++++WHERE+%7B%0D%0A++++++++++%3Fconcept+rdfs%3Alabel+%22Semantic+Web%22%40en+.%0D%0A++++++++++%7B+%3Fperson+dbp%3Afields+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbo%3Afield+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbo%3AknownFor+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbp%3Afield+%3Fconcept+%7D%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbo%3Anationality+%3Fnationality+.%0D%0A++++++++++++%3Fnationality+rdfs%3Alabel+%3Fnationality_name+.%0D%0A++++++++++++FILTER+%28+lang%28%3Fnationality_name%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++++%3Fperson+rdfs%3Alabel+%3Fperson_name+.%0D%0A++++++++++FILTER+%28+lang%28%3Fperson_name%29+%3D+%22en%22+%29+.%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbp%3AknownFor+%3Fknown_for+.%0D%0A++++++++++++FILTER+%28+lang%28%3Fknown_for%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbo%3AalmaMater+%3Falma_mater+.%0D%0A++++++++++++%3Falma_mater+rdfs%3Alabel+%3Funiversity_name+.%0D%0A++++++++++++FILTER+%28+lang%28%3Funiversity_name%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++%7D&format=text%2Fhtml&CXML_redir_for_subjs=121&CXML_redir_for_hrefs=&timeout=30000&debug=on'
+                span.label.label-info dbpedia
+          
+          .panel.panel-default
+            .panel-heading
+              .panel-title Courses
+            .panel-body -
+          
+          .panel.panel-default
+            .panel-heading
+              .panel-title Subjects
+            .panel-body
+              ul
+                - @subjects.each do |s|
+                  li
+                    a href='#{s[:subject].value}'= s[:label].value
+
+      .panel.panel-default
+        .panel-heading
+          .panel-title Links
+        .panel-body
+          ul
+            - @links.each do |link|
               li
-                = article[:label].value
-                a href="#{uri}" target='__blank'
-                  = fa_icon 'fw external-link'
-      .panel-footer
-        a href='/pages/publications?keyword=#{params[:keyword]}'
-          span.label.label-warning More
-    
-    .panel.panel-default
-      .panel-heading
-        .panel-title Projects
-      .panel-body.text-justify
-        ul
-          - uri = ''
-          - @projects.each do |project|
-            - if uri != project[:think].value
-              - uri = project[:think].value
-              li
-                - comment = project[:comment].present? ? " - #{project[:comment].value}" : ''
-                = "#{project[:label].value}#{comment} "
-                a href="#{uri}" target='__blank'
-                  = fa_icon 'fw external-link'
-    
-    .panel.panel-default
-      .panel-heading
-        .panel-title Wikidata
-      .panel-body
-        table.table.table-hover
-          tr
-            td uri
-            td
-              a href='#{@metaphacts[:uri].value}' = @metaphacts[:uri].value
-          tr
-            td label
-            td= @metaphacts[:label].value
-          tr
-            td description
-            td= @metaphacts[:description].value
-      .panel-footer
-        a href='#{@metaphacts[:uri].value}'
-          span.label.label-warning wikidata.metaphacts.com
+                - url = link[:url].present? ? link[:url].value : link[:link].value
+                a href='#{url}'
+                  - if link[:title].present?
+                    = link[:title].value
+                  - else
+                    = link[:link].value
 
-  .col-md-4.col-xs-4.col-sm-4
-    .panel.panel-default
-      .panel-heading
-        .panel-title People
-      .panel-body
-        ul
-          - @people.each do |person|
-            li
-              a href='#{person[:person].value}' = person[:person_name].value
-              - if person[:alma_mater].present? && person[:university_name].present?
-                span = " ("
-                a href='#{person[:alma_mater].value}' = person[:university_name].value
-                span = ")"
-      .panel-footer
-        a href='http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=SELECT+DISTINCT+%3Fconcept+%3Fperson+%3Fperson_name+%3Fnationality_name%0D%0A++++++++++++++++%28group_concat%28distinct+%3Fknown_for+%3B+separator+%3D+%22%3B%22%29+AS+%3Fknown_for%29%0D%0A++++++++++++++++%3Funiversity_name%0D%0A++++++++WHERE+%7B%0D%0A++++++++++%3Fconcept+rdfs%3Alabel+%22Semantic+Web%22%40en+.%0D%0A++++++++++%7B+%3Fperson+dbp%3Afields+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbo%3Afield+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbo%3AknownFor+%3Fconcept+%7D+UNION+%7B+%3Fperson+dbp%3Afield+%3Fconcept+%7D%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbo%3Anationality+%3Fnationality+.%0D%0A++++++++++++%3Fnationality+rdfs%3Alabel+%3Fnationality_name+.%0D%0A++++++++++++FILTER+%28+lang%28%3Fnationality_name%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++++%3Fperson+rdfs%3Alabel+%3Fperson_name+.%0D%0A++++++++++FILTER+%28+lang%28%3Fperson_name%29+%3D+%22en%22+%29+.%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbp%3AknownFor+%3Fknown_for+.%0D%0A++++++++++++FILTER+%28+lang%28%3Fknown_for%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++++OPTIONAL+%7B%0D%0A++++++++++++%3Fperson+dbo%3AalmaMater+%3Falma_mater+.%0D%0A++++++++++++%3Falma_mater+rdfs%3Alabel+%3Funiversity_name+.%0D%0A++++++++++++FILTER+%28+lang%28%3Funiversity_name%29+%3D+%22en%22+%29%0D%0A++++++++++%7D%0D%0A++++++++%7D&format=text%2Fhtml&CXML_redir_for_subjs=121&CXML_redir_for_hrefs=&timeout=30000&debug=on'
-          span.label.label-info dbpedia
-    
-    .panel.panel-default
-      .panel-heading
-        .panel-title Courses
-      .panel-body -
-    
-    .panel.panel-default
-      .panel-heading
-        .panel-title Subjects
-      .panel-body
-        ul
-          - @subjects.each do |s|
-            li
-              a href='#{s[:subject].value}'= s[:label].value
+  .tab-pane#tabdatagraph role='tabpanel'
+    .tab-data-wiki
+      .row
+        .panel.panel-default
+          .panel-heading
+            .panel-title Data Grpah
+          .panel-body
+            #datagraph
 
-.panel.panel-default
-  .panel-heading
-    .panel-title Links
-  .panel-body
-    ul
-      - @links.each do |link|
-        li
-          - url = link[:url].present? ? link[:url].value : link[:link].value
-          a href='#{url}'
-            - if link[:title].present?
-              = link[:title].value
-            - else
-              = link[:link].value
-
-.panel.panel-default
-  .panel-heading
-    .panel-title Structure Grpah
-  .panel-body
-    #graph
-
-.panel.panel-default
-  .panel-heading
-    .panel-title Data Grpah
-  .panel-body
-    #datagraph
+  .tab-pane#tabgraph role='tabpanel'
+    .tab-data-wiki
+      .row
+        .panel.panel-default
+          .panel-heading
+            .panel-title Structure Grpah
+          .panel-body
+            #graph
