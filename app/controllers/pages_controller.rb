@@ -19,15 +19,46 @@ class PagesController < ApplicationController
   def make_json
     result = {
       name: 'owl:Thing',
+      type: :class,
       children: [{
         name: 'ifmo:Keyword',
+        type: :class,
         children: [
-          {name: 'foaf:Person'},
-          {name: 'foaf:Project'},
-          {name: 'ifmo:Wikidata'},
-          {name: 'ifmo:Subject'},
-          {name: 'ifmo:Link'},
-          {name: 'bibo:Article'}
+          {name: 'foaf:Person', type: :class, children:
+            [{name: 'dbp:knownFor', type: :property},
+             {name: 'dbo:almaMater', type: :property},
+             {name: 'rdfs:label', type: :property},
+             {name: 'dbo:nationality', type: :property}]},
+          {name: 'foaf:Project', type: :class, children: [
+            {name: 'rdfs:description', type: :property},
+            {name: 'ou:startDate', type: :property},
+            {name: 'ou:endDate', type: :property},
+            {name: 'foaf:homepage', type: :property},
+            {name: 'rdfs:label', type: :property},
+            {name: 'dc:subject', type: :property}
+          ]},
+          {name: 'ifmo:Wikidata', type: :class, children: [
+            {name: 'rdfs:description', type: :property},
+            {name: 'rdfs:label', type: :property}
+          ]},
+          {name: 'ifmo:Subject', type: :class, children: [
+            {name: 'rdfs:label', type: :property},
+            {name: 'dct:subject', type: :property}
+          ]},
+          {name: 'ifmo:Link', type: :class, children: [
+            {name: 'dbo:wikiPageExternalLink', type: :property},
+            {name: 'rdfs:label', type: :property},
+            {name: 'foaf:homepage', type: :property}
+          ]},
+          {name: 'bibo:Article', type: :class, children: [
+            {name: 'dc:date', type: :property},
+            {name: 'rdfs:description', type: :property},
+            {name: 'rdfs:label', type: :property}
+          ]},
+          {name: 'rdfs:description', type: :property},
+          {name: 'rdfs:label', type: :property},
+          {name: 'foaf:homepage', type: :property},
+          {name: 'foaf:primaryTopic', type: :property}
         ]
       }]
     }
