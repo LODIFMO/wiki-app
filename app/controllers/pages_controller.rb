@@ -66,18 +66,18 @@ class PagesController < ApplicationController
     people = @people.map do |person|
       un = []
       if person[:alma_mater].present? && person[:university_name].present?
-        un << {name: person[:university_name].value}
+        un << {name: person[:university_name].value, type: :university}
       end
-      {name: person[:person_name].value, children: un}
+      {name: person[:person_name].value, children: un, type: :person}
     end
     links = []
     @links.each do |link|
       next unless link[:title].present?
-      links << { name: link[:title].value }
+      links << { name: link[:title].value , type: :link}
     end
 
     subjects = @subjects.map do |s|
-      {name: s[:label].value}
+      {name: s[:label].value, type: :subject}
     end
 
     articles = []
@@ -85,7 +85,7 @@ class PagesController < ApplicationController
     @articles.map do |article|
       if uri != article[:think].value
         uri = article[:think].value
-        articles << {name: article[:label].value}
+        articles << {name: article[:label].value, type: :article}
       end
     end
 
@@ -94,14 +94,15 @@ class PagesController < ApplicationController
     @projects.map do |project|
       if uri != project[:think].value
         uri = project[:think].value
-        articles << {name: project[:label].value}
+        projects << {name: project[:label].value, type: :project}
       end
     end
     result = {
       name: @keyword,
-      children: people | links | subjects | articles | projects
+      children: people | links | subjects | articles | projects,
+      type: :keyword
     }
-    File.open("#{Rails.root}/public/#{@keyword.parameterize.underscore}.json", 'w') { |file| file.write result.to_json }
+    File.open("#{Rails.root}/public/#{@keyword.parameterize.underscore}_data.json", 'w') { |file| file.write result.to_json }
   end
 
   def load_projects
