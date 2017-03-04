@@ -11,9 +11,28 @@ class PagesController < ApplicationController
     @subjects = load_subjects
     @articles = load_articles
     @projects = load_projects
+    make_json
   end
 
   private
+
+  def make_json
+    result = {
+      name: 'owl:Thing',
+      children: [{
+        name: 'ifmo:Keyword',
+        children: [
+          {name: 'foaf:Person'},
+          {name: 'foaf:Project'},
+          {name: 'ifmo:Wikidata'},
+          {name: 'ifmo:Subject'},
+          {name: 'ifmo:Link'},
+          {name: 'bibo:Article'}
+        ]
+      }]
+    }
+    File.open("#{Rails.root}/public/#{@keyword.parameterize.underscore}.json", 'w') { |file| file.write result.to_json }
+  end
 
   def load_projects
     sparql = SPARQL::Client.new('http://data.open.ac.uk/sparql')

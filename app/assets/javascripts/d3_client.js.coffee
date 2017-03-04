@@ -144,6 +144,18 @@ $(document).ready ->
     
   #   update d
 
+  getParams = ->
+    query = window.location.search.substring(1)
+    raw_vars = query.split("&")
+
+    params = {}
+
+    for v in raw_vars
+      [key, val] = v.split("=")
+      params[key] = decodeURIComponent(val)
+
+    params
+
   margin = 
     top: 20
     right: 120
@@ -246,7 +258,7 @@ $(document).ready ->
     update d
     return
 
-  d3.json '/owl.json', (error, flare) ->
+  d3.json "/#{getParams().keyword.replace /\+/, '_'}.json", (error, flare) ->
 
     collapse = (d) ->
       if d.children
@@ -258,7 +270,7 @@ $(document).ready ->
     root = flare
     root.x0 = height / 2
     root.y0 = 0
-    root.children.forEach collapse
+    # root.children.forEach collapse
     update root
     return
   d3.select(self.frameElement).style 'height', '800px'
