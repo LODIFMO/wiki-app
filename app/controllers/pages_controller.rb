@@ -1,4 +1,6 @@
 class PagesController < ApplicationController
+  def index() end
+
   def show
     redirect_to '/' if params[:keyword].blank?
     @metaphacts = wikidata_metaphacts.first
