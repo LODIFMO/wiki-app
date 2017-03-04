@@ -17,50 +17,89 @@ class PagesController < ApplicationController
   private
 
   def make_json
+    # result = {
+    #   name: 'owl:Thing',
+    #   type: :class,
+    #   children: [{
+    #     name: 'ifmo:Keyword',
+    #     type: :class,
+    #     children: [
+    #       {name: 'foaf:Person', type: :class, children:
+    #         [{name: 'dbp:knownFor', type: :property},
+    #          {name: 'dbo:almaMater', type: :property},
+    #          {name: 'rdfs:label', type: :property},
+    #          {name: 'dbo:nationality', type: :property}]},
+    #       {name: 'foaf:Project', type: :class, children: [
+    #         {name: 'rdfs:description', type: :property},
+    #         {name: 'ou:startDate', type: :property},
+    #         {name: 'ou:endDate', type: :property},
+    #         {name: 'foaf:homepage', type: :property},
+    #         {name: 'rdfs:label', type: :property},
+    #         {name: 'dc:subject', type: :property}
+    #       ]},
+    #       {name: 'ifmo:Wikidata', type: :class, children: [
+    #         {name: 'rdfs:description', type: :property},
+    #         {name: 'rdfs:label', type: :property}
+    #       ]},
+    #       {name: 'ifmo:Subject', type: :class, children: [
+    #         {name: 'rdfs:label', type: :property},
+    #         {name: 'dct:subject', type: :property}
+    #       ]},
+    #       {name: 'ifmo:Link', type: :class, children: [
+    #         {name: 'dbo:wikiPageExternalLink', type: :property},
+    #         {name: 'rdfs:label', type: :property},
+    #         {name: 'foaf:homepage', type: :property}
+    #       ]},
+    #       {name: 'bibo:Article', type: :class, children: [
+    #         {name: 'dc:date', type: :property},
+    #         {name: 'rdfs:description', type: :property},
+    #         {name: 'rdfs:label', type: :property}
+    #       ]},
+    #       {name: 'rdfs:description', type: :property},
+    #       {name: 'rdfs:label', type: :property},
+    #       {name: 'foaf:homepage', type: :property},
+    #       {name: 'foaf:primaryTopic', type: :property}
+    #     ]
+    #   }]
+    # }
+
+    people = @people.map do |person|
+      un = []
+      if person[:alma_mater].present? && person[:university_name].present?
+        un << {name: person[:university_name].value}
+      end
+      {name: person[:person_name].value, children: un}
+    end
+    links = []
+    @links.each do |link|
+      next unless link[:title].present?
+      links << { name: link[:title].value }
+    end
+
+    subjects = @subjects.map do |s|
+      {name: s[:label].value}
+    end
+
+    articles = []
+    uri = ''
+    @articles.map do |article|
+      if uri != article[:think].value
+        uri = article[:think].value
+        articles << {name: article[:label].value}
+      end
+    end
+
+    projects = []
+    uri = ''
+    @projects.map do |project|
+      if uri != project[:think].value
+        uri = project[:think].value
+        articles << {name: project[:label].value}
+      end
+    end
     result = {
-      name: 'owl:Thing',
-      type: :class,
-      children: [{
-        name: 'ifmo:Keyword',
-        type: :class,
-        children: [
-          {name: 'foaf:Person', type: :class, children:
-            [{name: 'dbp:knownFor', type: :property},
-             {name: 'dbo:almaMater', type: :property},
-             {name: 'rdfs:label', type: :property},
-             {name: 'dbo:nationality', type: :property}]},
-          {name: 'foaf:Project', type: :class, children: [
-            {name: 'rdfs:description', type: :property},
-            {name: 'ou:startDate', type: :property},
-            {name: 'ou:endDate', type: :property},
-            {name: 'foaf:homepage', type: :property},
-            {name: 'rdfs:label', type: :property},
-            {name: 'dc:subject', type: :property}
-          ]},
-          {name: 'ifmo:Wikidata', type: :class, children: [
-            {name: 'rdfs:description', type: :property},
-            {name: 'rdfs:label', type: :property}
-          ]},
-          {name: 'ifmo:Subject', type: :class, children: [
-            {name: 'rdfs:label', type: :property},
-            {name: 'dct:subject', type: :property}
-          ]},
-          {name: 'ifmo:Link', type: :class, children: [
-            {name: 'dbo:wikiPageExternalLink', type: :property},
-            {name: 'rdfs:label', type: :property},
-            {name: 'foaf:homepage', type: :property}
-          ]},
-          {name: 'bibo:Article', type: :class, children: [
-            {name: 'dc:date', type: :property},
-            {name: 'rdfs:description', type: :property},
-            {name: 'rdfs:label', type: :property}
-          ]},
-          {name: 'rdfs:description', type: :property},
-          {name: 'rdfs:label', type: :property},
-          {name: 'foaf:homepage', type: :property},
-          {name: 'foaf:primaryTopic', type: :property}
-        ]
-      }]
+      name: @keyword,
+      children: people | links | subjects | articles | projects
     }
     File.open("#{Rails.root}/public/#{@keyword.parameterize.underscore}.json", 'w') { |file| file.write result.to_json }
   end
