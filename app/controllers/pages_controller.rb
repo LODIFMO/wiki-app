@@ -12,57 +12,61 @@ class PagesController < ApplicationController
     @articles = load_articles
     @projects = load_projects
     make_json
+    make_date_json
   end
 
   private
 
-  def make_json
-    # result = {
-    #   name: 'owl:Thing',
-    #   type: :class,
-    #   children: [{
-    #     name: 'ifmo:Keyword',
-    #     type: :class,
-    #     children: [
-    #       {name: 'foaf:Person', type: :class, children:
-    #         [{name: 'dbp:knownFor', type: :property},
-    #          {name: 'dbo:almaMater', type: :property},
-    #          {name: 'rdfs:label', type: :property},
-    #          {name: 'dbo:nationality', type: :property}]},
-    #       {name: 'foaf:Project', type: :class, children: [
-    #         {name: 'rdfs:description', type: :property},
-    #         {name: 'ou:startDate', type: :property},
-    #         {name: 'ou:endDate', type: :property},
-    #         {name: 'foaf:homepage', type: :property},
-    #         {name: 'rdfs:label', type: :property},
-    #         {name: 'dc:subject', type: :property}
-    #       ]},
-    #       {name: 'ifmo:Wikidata', type: :class, children: [
-    #         {name: 'rdfs:description', type: :property},
-    #         {name: 'rdfs:label', type: :property}
-    #       ]},
-    #       {name: 'ifmo:Subject', type: :class, children: [
-    #         {name: 'rdfs:label', type: :property},
-    #         {name: 'dct:subject', type: :property}
-    #       ]},
-    #       {name: 'ifmo:Link', type: :class, children: [
-    #         {name: 'dbo:wikiPageExternalLink', type: :property},
-    #         {name: 'rdfs:label', type: :property},
-    #         {name: 'foaf:homepage', type: :property}
-    #       ]},
-    #       {name: 'bibo:Article', type: :class, children: [
-    #         {name: 'dc:date', type: :property},
-    #         {name: 'rdfs:description', type: :property},
-    #         {name: 'rdfs:label', type: :property}
-    #       ]},
-    #       {name: 'rdfs:description', type: :property},
-    #       {name: 'rdfs:label', type: :property},
-    #       {name: 'foaf:homepage', type: :property},
-    #       {name: 'foaf:primaryTopic', type: :property}
-    #     ]
-    #   }]
-    # }
+  def make_date_json
+    result = {
+      name: 'owl:Thing',
+      type: :class,
+      children: [{
+        name: 'ifmo:Keyword',
+        type: :class,
+        children: [
+          {name: 'foaf:Person', type: :class, children:
+            [{name: 'dbp:knownFor', type: :property},
+             {name: 'dbo:almaMater', type: :property},
+             {name: 'rdfs:label', type: :property},
+             {name: 'dbo:nationality', type: :property}]},
+          {name: 'foaf:Project', type: :class, children: [
+            {name: 'rdfs:description', type: :property},
+            {name: 'ou:startDate', type: :property},
+            {name: 'ou:endDate', type: :property},
+            {name: 'foaf:homepage', type: :property},
+            {name: 'rdfs:label', type: :property},
+            {name: 'dc:subject', type: :property}
+          ]},
+          {name: 'ifmo:Wikidata', type: :class, children: [
+            {name: 'rdfs:description', type: :property},
+            {name: 'rdfs:label', type: :property}
+          ]},
+          {name: 'ifmo:Subject', type: :class, children: [
+            {name: 'rdfs:label', type: :property},
+            {name: 'dct:subject', type: :property}
+          ]},
+          {name: 'ifmo:Link', type: :class, children: [
+            {name: 'dbo:wikiPageExternalLink', type: :property},
+            {name: 'rdfs:label', type: :property},
+            {name: 'foaf:homepage', type: :property}
+          ]},
+          {name: 'bibo:Article', type: :class, children: [
+            {name: 'dc:date', type: :property},
+            {name: 'rdfs:description', type: :property},
+            {name: 'rdfs:label', type: :property}
+          ]},
+          {name: 'rdfs:description', type: :property},
+          {name: 'rdfs:label', type: :property},
+          {name: 'foaf:homepage', type: :property},
+          {name: 'foaf:primaryTopic', type: :property}
+        ]
+      }]
+    }
+    File.open("#{Rails.root}/public/#{@keyword.parameterize.underscore}.json", 'w') { |file| file.write result.to_json }
+  end
 
+  def make_json
     people = @people.map do |person|
       un = []
       if person[:alma_mater].present? && person[:university_name].present?
