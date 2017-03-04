@@ -11,5 +11,10 @@ module Api
       result = JSON.parse($redis.get(params[:keyword])) || {'data_graph' => {}}
       render json: result['data_graph']
     end
+
+    def redis_ping
+      $redis.set('test', 'pong')
+      render json: :ok
+    end
   end
 end
