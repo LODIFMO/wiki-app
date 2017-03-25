@@ -7,4 +7,4 @@ Rails.application.config.redis = {
 
 # Initialize redis object
 $redis = Redis.new Rails.application.config.redis unless Rails.env.production?
-$redis = Redis.new ENV['REDIS_URL'] if Rails.env.production?
+$redis = Redis.new url: ENV['REDIS_URL'] if Rails.env.production?
