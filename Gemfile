@@ -42,6 +42,10 @@ gem 'faker'
 # semantic web
 gem 'sparql-client'
 
+# caching data
+gem 'redis', '~>3.2'
+
+# heroku
 gem 'rails_12factor', group: :production
 
 group :development, :test do
