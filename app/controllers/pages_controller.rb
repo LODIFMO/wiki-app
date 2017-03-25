@@ -15,9 +15,17 @@ class PagesController < ApplicationController
     @projects = load_projects
     make_json
     make_date_json
+    save2redis
   end
 
   private
+
+  def save2redis
+    array = JSON.parse($redis.get('requests') || '[]')
+    hash = {'keyword' => @keyword, 'url' => request.original_url}
+    array << hash unless array.include?(hash)
+    $redis.set('requests', array.to_json)
+  end
 
   def make_date_json
     result = {
