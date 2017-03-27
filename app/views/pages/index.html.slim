@@ -3,12 +3,7 @@
 
 .row
   table.table.table-hover
-    tr
-      td
-        a href='/pages/show?keyword=data+mining' Data mining
-    tr
-      td
-        a href='/pages/show?keyword=semantic+web' Semantic Web
-    tr
-      td
-        a href='/pages/show?keyword=knowledge+management' Knowledge management
+    - @queries.each do |q|
+      tr
+        td
+          a href="#{q['url']}"= q['keyword']

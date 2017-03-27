@@ -1,5 +1,7 @@
 class PagesController < ApplicationController
-  def index() end
+  def index()
+    @queries = JSON.parse($redis.get("requests") || '[]')
+  end
 
   def show
     redirect_to '/' if params[:keyword].blank?
