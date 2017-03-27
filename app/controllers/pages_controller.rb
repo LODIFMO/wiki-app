@@ -1,6 +1,13 @@
 class PagesController < ApplicationController
-  def index()
+  def index
     @queries = JSON.parse($redis.get("requests") || '[]')
+  end
+
+  def keyword
+    redirect_to '/' if params[:keyword].blank?
+    @keyword = correct_keyword.first[:label].value
+    @engdescription = load_eng_description.last
+    @rusdescription = load_rus_description.last
   end
 
   def show
