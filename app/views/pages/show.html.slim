@@ -126,19 +126,7 @@ br
                   li
                     a href='#{s[:subject].value}'= s[:label].value
 
-      .panel.panel-default
-        .panel-heading
-          .panel-title Links
-        .panel-body
-          ul
-            - @links.each do |link|
-              li
-                - url = link[:url].present? ? link[:url].value : link[:link].value
-                a href='#{url}'
-                  - if link[:title].present?
-                    = link[:title].value
-                  - else
-                    = link[:link].value
+      = react_component 'Links', {links: @links.map {|link| { url: link[:url].present? ? link[:url].value : link[:link].value, title: link[:title].present? ? link[:title].value : link[:link].value } }}
 
   .tab-pane#tabdatagraph role='tabpanel'
     .tab-data-wiki
